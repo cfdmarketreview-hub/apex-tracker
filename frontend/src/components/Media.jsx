@@ -4,6 +4,14 @@ import { useStore } from '../store/useStore.js'
 import { t, exerciseNameFor } from '../lib/i18n.js'
 import Icon from './Icon.jsx'
 import CustomMedia, { CustomThumb } from './CustomMedia.jsx'
+import { APEX } from '../lib/apex.js'
+
+const ApexPlaceholder = ({ ex, thumb = false }) => (
+  <div className={thumb ? 'thumb thumb-x apex-thumb' : 'exmedia apex-media-placeholder'}>
+    <Icon name="target" />
+    {!thumb && <span>{t(ex?.tg || ex?.bp || 'Exercise')}</span>}
+  </div>
+)
 
 // An exercise's picture, wherever one shows. A custom exercise goes to CustomMedia.jsx — its own
 // photo, GIF, video or link, from the local media store — and never through imgSrc/gifSrc, which
@@ -29,6 +37,7 @@ function BuiltinMedia({ ex, id, compact, minimizable }) {
   const [failed, setFailed] = useState(null)
   const gifSize = useStore(s => s.S.gifSize)
   const update = useStore(s => s.update)
+  if (APEX) return <ApexPlaceholder ex={ex} />
   if (!ex.gif) return null
   if (minimizable && gifSize === 'off') return null
   const mini = minimizable && gifSize === 'mini'
@@ -66,6 +75,7 @@ export function Thumb(p) {
   return p.ex?.custom ? <CustomThumb {...p} /> : <BuiltinThumb {...p} />
 }
 function BuiltinThumb({ ex }) {
+  if (APEX) return <ApexPlaceholder ex={ex} thumb />
   const src = ex.img ? imgSrc(ex) : null
   const [broken, setBroken] = useState(null)
   if (!src || broken === src) return <div className="thumb thumb-x"><Icon name="dumbbell" /></div>

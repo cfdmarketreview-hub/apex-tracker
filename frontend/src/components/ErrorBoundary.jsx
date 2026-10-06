@@ -3,6 +3,7 @@ import { useStore } from '../store/useStore.js'
 import { t } from '../lib/i18n.js'
 import Icon from './Icon.jsx'
 import { Button } from './ui.jsx'
+import { APEX } from '../lib/apex.js'
 
 /**
  * Last line of defence: one bad render used to blank the whole app, with no way back —
@@ -27,7 +28,7 @@ export default class ErrorBoundary extends Component {
           <div style={{ fontWeight: 600, marginBottom: 6 }}>{t('Something went wrong')}</div>
           {t('This screen could not be drawn. Your data is safe on this device.')}
         </div>
-        <Button variant="primary" icon="reset" onClick={() => location.reload()}>{t('Reload openGym')}</Button>
+        <Button variant="primary" icon="reset" onClick={() => location.reload()}>{APEX ? 'Reload Apex Tracker' : t('Reload openGym')}</Button>
         {active && <>
           <div style={{ height: 8 }} />
           <Button variant="danger" icon="trash" onClick={() => {

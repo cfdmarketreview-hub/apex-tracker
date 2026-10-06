@@ -21,7 +21,8 @@ const IDLE_MS = 60000       // a Coach screen is open but nothing is running
 // staleness, apply, revert, the log — runs unchanged; only the provider is faked. The module
 // is imported dynamically so none of it lands in a self-hosted bundle.
 let demoMod = null
-const demo = async () => (demoMod = demoMod || await import('./coach-demo.js'))
+let demoLoading = DEMO ? import('./coach-demo.js') : null
+const demo = async () => (demoMod = demoMod || await (demoLoading || (demoLoading = import('./coach-demo.js'))))
 const S = () => useStore.getState().S
 // Each request says which language the app is in: a profile that never picked one has no stored
 // `lang` worth trusting — it is worked out per device (#303, lib/default-lang.js) — and the

@@ -10,6 +10,7 @@ import Icon from '../components/Icon.jsx'
 import { Button } from '../components/ui.jsx'
 import { tappable } from '../lib/use-sheet-keyboard.js'
 import { glyphOf } from '../lib/glyphs.js'
+import { APEX, APP_NAME, APEX_SOURCE, OPENGYM_SOURCE } from '../lib/apex.js'
 
 // Home = what to do now + a quick glance. Deep charts & history live in Stats.
 export default function Home() {
@@ -65,7 +66,10 @@ export default function Home() {
 
   return <div className="narrow">
     <div className="hdr">
-      <div><h1>{user ? t('Hi {0}', user.name) : 'openGym'}</h1><div className="sub">{today.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' })}</div></div>
+      <div>
+        <h1>{APEX && <span className="apex-wordmark" aria-hidden="true">A</span>}{user ? t('Hi {0}', user.name) : APP_NAME}</h1>
+        <div className="sub">{today.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' })}</div>
+      </div>
       <button className="iconbtn" onClick={() => nav('/settings')} aria-label={t('Settings')}><Icon name="gear" /></button>
     </div>
 
@@ -119,7 +123,7 @@ export default function Home() {
       <div className="card tappable" style={{ cursor: 'pointer' }} {...tappable(() => nav('/checkin'))}>
         <div className="row between">
           <div className="row" style={{ gap: 9 }}>
-            <span className="lrow-i" style={{ background: 'var(--blue)' }}><Icon name="qr" /></span>
+            <span className="lrow-i" style={{ background: APEX ? 'var(--acc)' : 'var(--blue)' }}><Icon name="qr" /></span>
             <div>
               <div className="lbl2">{t('At the gym')}</div>
               <div className="ttl">{t('Check in')}</div>
@@ -190,5 +194,8 @@ export default function Home() {
         <Icon name="calendar" className="chev" style={{ fontSize: 20 }} />
       </div>
     </div>
+    {APEX && <footer className="apex-attribution">
+      Apex Tracker is a modified version of <a href={OPENGYM_SOURCE} target="_blank" rel="noopener">openGym</a> by Duarte Santos, licensed under AGPL-3.0. Source code: <a href={APEX_SOURCE} target="_blank" rel="noopener">{APEX_SOURCE}</a>
+    </footer>}
   </div>
 }

@@ -14,6 +14,7 @@ import { installViewportGuard } from './lib/viewport-guard.js'
 import { installChipDrag } from './lib/hchips.js'
 import { syncPushSubscription } from './lib/push.js'
 import { MOBILE } from './lib/mobile.js'
+import { APEX } from './lib/apex.js'
 import { exitWorkoutEdit, startFlow } from './sheets.jsx'
 import Icon from './components/Icon.jsx'
 import TabBar from './components/TabBar.jsx'
@@ -54,10 +55,10 @@ const resolveTheme = theme => theme === 'light' || theme === 'dark'
 
 function applyPrefs(theme, accent) {
   const de = document.documentElement
-  de.dataset.theme = resolveTheme(theme)
-  de.dataset.accent = ACCENTS[accent] ? accent : 'lime'
+  de.dataset.theme = APEX ? 'dark' : resolveTheme(theme)
+  de.dataset.accent = APEX ? 'gold' : (ACCENTS[accent] ? accent : 'lime')
   const meta = document.querySelector('meta[name="theme-color"]')
-  if (meta) meta.content = de.dataset.theme === 'light' ? '#f2f2f7' : '#000000'
+  if (meta) meta.content = APEX ? '#080808' : (de.dataset.theme === 'light' ? '#f2f2f7' : '#000000')
 }
 
 function Shell() {
@@ -117,7 +118,7 @@ function Shell() {
   // lib/push.js): a subscription the instance lost is back before the next reminder is due,
   // with nobody having to visit Settings. Web only — the APK has no service worker.
   useEffect(() => {
-    if (MOBILE || !user || !ready) return
+    if (APEX || MOBILE || !user || !ready) return
     syncPushSubscription().catch(() => {})
   }, [user?.id, ready])
   // Opened from a device-link QR code (#95): once boot knows who is here, the sheet that redeems
@@ -126,7 +127,7 @@ function Shell() {
   const linkCode = useStore(s => s.linkCode)
   const linkOffered = useRef(false)
   useEffect(() => {
-    if (!ready || !linkCode || linkOffered.current) return
+    if (APEX || !ready || !linkCode || linkOffered.current) return
     linkOffered.current = true
     openDeviceLinkRedeem()
   }, [ready, linkCode])
@@ -158,7 +159,7 @@ function Shell() {
   // bound to the workout, not to the route — checking Stats mid-session keeps the screen on
   useWakeLock(!!S.active && !S.active.editingWorkoutId && S.keepAwake !== false)
 
-  const authed = user || isGuest
+  const authed = APEX || user || isGuest
   if (!ready && !authed) return (
     <div id="app">
       <div style={{ paddingTop: '44vh', display: 'flex', justifyContent: 'center', fontSize: 34, color: 'var(--label-3)' }}>
@@ -191,11 +192,11 @@ function Shell() {
               {/* The Coach screens gate themselves on the instance config; the routes exist
                   unconditionally so a deep link from a notification lands somewhere sane
                   rather than on the catch-all. */}
-              <Route path="/coach" element={<CoachChat />} />
-              <Route path="/coach/intake" element={<CoachIntake />} />
-              <Route path="/coach/proposal" element={<Navigate to="/coach" replace />} />
-              <Route path="/coach/setup" element={<CoachSetup />} />
-              <Route path="/admin" element={user?.admin ? <Admin /> : <Navigate to="/home" replace />} />
+              {!APEX && <Route path="/coach" element={<CoachChat />} />}
+              {!APEX && <Route path="/coach/intake" element={<CoachIntake />} />}
+              {!APEX && <Route path="/coach/proposal" element={<Navigate to="/coach" replace />} />}
+              {!APEX && <Route path="/coach/setup" element={<CoachSetup />} />}
+              {!APEX && <Route path="/admin" element={user?.admin ? <Admin /> : <Navigate to="/home" replace />} />}
               <Route path="*" element={<Navigate to="/home" replace />} />
             </Routes>
           )}
@@ -204,7 +205,7 @@ function Shell() {
       {/* Outside #app: the view's fade-in animates a transform, and a fixed element inside it
           would ride along with the page for the length of it. Decides for itself when to show —
           including on the sign-in screen, when the server has just ended the session. */}
-      <SyncBanner />
+      {!APEX && <SyncBanner />}
       {/* The chat owns the bottom of the screen: its composer sits where the tabs would be. */}
       {loc.pathname !== '/coach' && <TabBar onStart={startFlow} />}
       <RestTimer />

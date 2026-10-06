@@ -1,3 +1,5 @@
+> Modified by Apex Life Fitness, 2026. This working tree adds the Apex Tracker static, browser-only build, local guest-mode storage, Apex branding, analytics, and server/media feature gates while preserving the default openGym build.
+
 <div align="center">
 
 <img src="assets/banner.png" alt="openGym" width="720">

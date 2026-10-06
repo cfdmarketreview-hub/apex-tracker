@@ -1723,3 +1723,59 @@ body.chips-dragging *{cursor:inherit}
 [dir="rtl"] .hm-wrap,[dir="rtl"] .cal-grid{direction:ltr}
 /* Tight tracking is tuned for Latin; Arabic is a connected script and gets none. */
 [dir="rtl"] *{letter-spacing:0}
+
+/* Apex Tracker's branded static build. All selectors are scoped so the default build retains
+   the upstream themes, geometry and typography. */
+:root[data-apex]{
+  --bg:#080808;
+  --bg-el:#080808;
+  --surface:#111111;
+  --surface-2:#161616;
+  --surface-3:#1a1a1a;
+  --label:#f0ede8;
+  --label-2:#6b6b65;
+  --label-3:#5b5b56;
+  --label-4:#30302d;
+  --sep:#1e1e1e;
+  --sep-op:#1e1e1e;
+  --acc:#c8a96e;
+  --acc-2:#ad8d54;
+  --on-acc:#080808;
+  --r-sm:2px;
+  --r:3px;
+  --r-lg:4px;
+  --r-xl:4px;
+  --r-card:4px;
+}
+:root[data-apex] body{font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif}
+:root[data-apex] .card,
+:root[data-apex] .sect-b{border:1px solid #1e1e1e}
+:root[data-apex] .sheet{border:1px solid #1e1e1e;border-bottom:0}
+:root[data-apex] .apex-wordmark{
+  display:inline-flex;align-items:center;justify-content:center;width:1.15em;height:1.15em;
+  margin-inline-end:.28em;border:1px solid #c8a96e;color:#c8a96e;font-size:.72em;
+  line-height:1;font-weight:700;vertical-align:.12em;
+}
+:root[data-apex] .apex-media-placeholder{
+  min-height:152px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:9px;background:#111111;border:1px solid #1e1e1e;color:#6b6b65;text-transform:capitalize;
+}
+:root[data-apex] .apex-media-placeholder .icn{font-size:30px;color:#c8a96e}
+:root[data-apex] .apex-media-placeholder span{font-size:13px;letter-spacing:.04em}
+:root[data-apex] .apex-thumb{background:#111111;border:1px solid #1e1e1e;color:#c8a96e}
+:root[data-apex] .apex-attribution,
+:root[data-apex] .apex-about{
+  color:#6b6b65;font-size:12px;line-height:1.55;overflow-wrap:anywhere;
+}
+:root[data-apex] .apex-attribution{padding:10px 4px 18px;text-align:center}
+:root[data-apex] .apex-about{padding:14px}
+:root[data-apex] .apex-attribution a,
+:root[data-apex] .apex-about a{color:#c8a96e}
+:root[data-apex] .chips{
+  flex-wrap:wrap;overflow-x:visible;touch-action:auto;scroll-snap-type:none;
+}
+
+@media (max-width:360px){
+  :root[data-apex]{--pad:12px}
+  :root[data-apex] .card{padding:13px}
+}

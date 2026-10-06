@@ -22,6 +22,7 @@ import { limitsFrom, fmtMB, MB } from '../lib/media-limits.js'
 import { CustomThumb } from './CustomMedia.jsx'
 import { Row, Button } from './ui.jsx'
 import Icon from './Icon.jsx'
+import { APEX } from '../lib/apex.js'
 
 const toast = m => useUI.getState().toast(m)
 
@@ -147,8 +148,8 @@ export default function CustomMediaField({ media, url, onChange }) {
     <input ref={fileRef} type="file" accept="image/*,video/*" hidden onChange={onFile} />
     {warning && <div className="small dim cmf-note">{warning}</div>}
     {note && <div className="small dim cmf-note">{note}</div>}
-    <input className="input cmf-link" type="url" inputMode="url" autoCapitalize="off" autoCorrect="off" spellCheck={false}
+    {!APEX && <input className="input cmf-link" type="url" inputMode="url" autoCapitalize="off" autoCorrect="off" spellCheck={false}
       dir={url ? 'ltr' : undefined} placeholder={t('Video or guide link (optional)')}
-      value={url || ''} onChange={e => onChange({ url: e.target.value })} />
+      value={url || ''} onChange={e => onChange({ url: e.target.value })} />}
   </div>
 }

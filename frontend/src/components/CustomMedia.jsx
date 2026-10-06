@@ -26,10 +26,12 @@ import { fetchToStore, mayFetch } from '../lib/media-sync.js'
 import { prefetchAllowed } from '../lib/media-prefetch.js'
 import { LOOP_MAX_SEC } from '../lib/media-limits.js'
 import Icon from './Icon.jsx'
+import { APEX } from '../lib/apex.js'
 
 /** Opens a link after a tap: sanitised again here, since plan files and backups can bring any
  *  string in, and in a new browsing context with no opener and no Referer. */
 export function openExternal(url) {
+  if (APEX) return
   const u = cleanUrl(url)
   if (u) window.open(u, '_blank', 'noopener,noreferrer')
 }
@@ -43,7 +45,7 @@ export function openExternal(url) {
  */
 export function useMediaUrl(file, { auto = true } = {}) {
   const hash = file && typeof file.hash === 'string' ? file.hash : null
-  const canFetch = useStore(s => !!(s.user && s.config?.media))
+  const canFetch = useStore(s => !APEX && !!(s.user && s.config?.media))
   const [state, setState] = useState({ url: null, status: hash ? 'loading' : 'none' })
   const [asked, setAsked] = useState(0)
   const [rev, setRev] = useState(0)
@@ -96,7 +98,7 @@ const reducedMotion = () => {
 // catalogue's thumbs (#281). While a poster is on its way the tile shows too, so a row never jumps.
 export function CustomThumb({ ex }) {
   const m = mediaOf(ex)
-  const link = m ? null : cleanUrl(ex?.url)
+  const link = APEX || m ? null : cleanUrl(ex?.url)
   const poster = useMediaUrl(m?.poster || null)
   const [broken, setBroken] = useState(null)
   if (poster.url && broken !== poster.url) {
@@ -111,6 +113,7 @@ export function CustomThumb({ ex }) {
 // #246's card, as a <button> rather than a link: nothing on the page points at the address, so
 // the browser has nothing to prefetch or preconnect to.
 export function LinkCard({ url, compact, mini }) {
+  if (APEX) return null
   const u = cleanUrl(url)
   if (!u) return null
   const video = linkKind(u) === 'video'
@@ -137,7 +140,7 @@ export default function CustomMedia({ ex, id, compact, minimizable }) {
   // The workout's list layout, from the store: only the workout card is minimizable.
   const listLayout = useStore(s => !!minimizable && ((s.S.active?.workoutView || s.S.workoutView) === 'list'))
   const m = mediaOf(ex)
-  const link = cleanUrl(ex?.url)
+  const link = APEX ? null : cleanUrl(ex?.url)
   if (!m && !link) return null
   if (minimizable && gifSize === 'off') return null
   const mini = !!minimizable && gifSize === 'mini'
